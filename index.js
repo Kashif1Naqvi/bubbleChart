@@ -1,7 +1,7 @@
 function render(data){
   let width  = window.innerWidth,
       height = window.innerHeight ,
-      margin = { top:100 , left:70 , right:50 , bottom:60 },
+      margin = { top:100 , left:70 , right:90 , bottom:60 },
       innerWidth = width - margin.left - margin.right,
       innerHeight = height - margin.top - margin.bottom;
       // last_updated
@@ -28,7 +28,7 @@ function render(data){
       })).range([0,innerWidth])
 
       var z = d3.scaleLinear()
-        .domain()
+        .domain([0,d3.max(data,function(d) { return Math.max([d.PopTotal])})])
         .range([ 4, 40]);
 
     let tickFormat = number => d3.format(".3s")(number).replace("G","B")
@@ -51,11 +51,11 @@ function render(data){
       let g = svg.append("g").attr("transform",`translate(${margin.top},${margin.left})`)
       let tooltip =d3.select("body").append("g").attr("transform",`translate(0,${innerHeight })`).attr("class","tooltips")
 
-    // let lineData =   g.append("path")
-    //     .attr("d",line(data))
-    //     .attr("stroke","red")
-    //     .attr("fill","none")
-    //
+    let lineData =   g.append("path")
+        .attr("d",line(data))
+        .attr("stroke","red")
+        .attr("fill","none")
+
     let circle=  g.selectAll("circle")
         .data(data)
         .enter()
@@ -89,7 +89,24 @@ function render(data){
         .attr("fill", function(d){return myColor(d) })
 
         .duration(10000)
-
+        let text = g.selectAll("text").data(data)
+                .enter()
+                .append("text")
+                .attr("x",0)
+                .attr("y",0)
+                .attr("text-anchor","middle")
+                .text(function(d,i){
+                  return d.PopTotal
+                })
+      text.transition()
+                .attr("x",function(d){
+                  return xScale(d.Time)
+                })
+                .attr("y",function(d){
+                  return yScale(d.PopTotal)
+                })
+                .attr("fill", "grey" )
+                .duration(10000)
 
     let xGroup =   g.append("g").call(xAxis).attr("transform",`translate(0,${innerHeight})`)
     let yGroup =  g.append("g").call(yAxis).attr("transform",`translate(0,0)`)
@@ -110,10 +127,10 @@ function render(data){
           }
         })
 
-        // lineData.datum(dataFilter)
-        // .transition()
-        // .duration(1000)
-        // .attr("d",d3.line().x(d=>xScale(d.Time)).y(d=>yScale(d.value)))
+        lineData.datum(dataFilter)
+        .transition()
+        .duration(1000)
+        .attr("d",d3.line().x(d=>xScale(d.Time)).y(d=>yScale(d.value)))
 
         circle.data(dataFilter)
           .transition()
@@ -124,6 +141,15 @@ function render(data){
           .attr("cy",function(d){
             return yScale(d.value)
           })
+          text.data(dataFilter).transition()
+                    .attr("x",function(d){
+                      return xScale(d.Time)
+                    })
+                    .attr("y",function(d){
+                      return yScale(d.value)
+                    })
+                    .attr("fill", "grey" )
+                    .duration(10000)
 
 
       }
