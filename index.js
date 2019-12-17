@@ -43,7 +43,7 @@ function render(data){
 
 
                                                                                                                                                                                     let xAxis = d3.axisBottom(xScale).ticks(15)
-      let yAxis = d3.axisLeft(yScale).tickFormat(tickFormat)
+      let yAxis = d3.axisLeft(yScale).tickFormat(tickFormat).tickSize(-innerWidth)
       let svg = d3.select("#chart").append("svg")
                   .attr("viewBox",`0 0 ${width} ${height}`)
                   // .attr("height",height)
@@ -110,9 +110,9 @@ function render(data){
 
     let xGroup =   g.append("g").call(xAxis).attr("transform",`translate(0,${innerHeight})`)
     let yGroup =  g.append("g").call(yAxis).attr("transform",`translate(-10,0)`)
-      g.append("text").attr("x",580).attr("y",70).text("Time").attr("text-anchor","middle").attr("transform",`translate(0,${innerHeight})`).attr("font-size",28).attr("class","text-data")
-      g.append("text").attr("x",580 ).attr("y",30).text("Population Vs Years").attr("text-anchor","middle").attr("transform",`translate(0,${-innerHeight/8})`).attr("font-size",28).attr("class","text-data")
-      g.append("text").attr("x",-270).attr("y",-60).text("Population").attr("font-size",28).attr("transform","rotate(-90)").attr("class","text-data")
+      g.append("text").attr("x",0).attr("y",70).text("Time").attr("text-anchor","middle").attr("transform",`translate(${innerWidth/2},${innerHeight})`).attr("font-size",28).attr("class","text-data")
+      g.append("text").attr("x",0 ).attr("y",30).text("Population Vs Years").attr("text-anchor","middle").attr("transform",`translate(${innerWidth/2},${-innerHeight/12})`).attr("font-size",28).attr("class","text-data")
+      g.append("text").attr("x",-innerHeight/2).attr("y",-60).text("Population").attr("font-size",28).attr("transform","rotate(-90)").attr("class","text-data")
       xGroup.select(".domain").remove()
       yGroup.select(".domain").remove()
       function update(selectedGroup){
@@ -141,15 +141,16 @@ function render(data){
           .attr("cy",function(d){
             return yScale(d.value)
           })
-          text.data(dataFilter).transition()
-                    .attr("x",function(d){
-                      return xScale(d.Time)
-                    })
-                    .attr("y",function(d){
-                      return yScale(d.value)
-                    })
-                    .attr("fill", "grey" )
-                    .duration(3000)
+          text.data(dataFilter)
+              .transition()
+              .attr("x",function(d){
+                return xScale(d.Time)
+              })
+              .attr("y",function(d){
+                return yScale(d.value)
+              })
+              .attr("fill", "grey" )
+              .duration(3000)
 
 
       }
