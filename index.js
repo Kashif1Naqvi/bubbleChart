@@ -53,7 +53,7 @@ function render(data){
 
     let lineData =   g.append("path")
         .attr("d",line(data))
-        .attr("stroke","red")
+        .attr("stroke","lightseagreen")
         .attr("fill","none")
 
     let circle=  g.selectAll("circle")
@@ -88,7 +88,7 @@ function render(data){
         .attr("r",function(d,i){return z(d.PopTotal)})
         .attr("fill", function(d){return myColor(d) })
 
-        .duration(10000)
+        .duration(8000)
         let text = g.selectAll("text").data(data)
                 .enter()
                 .append("text")
@@ -106,10 +106,10 @@ function render(data){
                   return yScale(d.PopTotal)
                 })
                 .attr("fill", "grey" )
-                .duration(10000)
+                .duration(8000)
 
     let xGroup =   g.append("g").call(xAxis).attr("transform",`translate(0,${innerHeight})`)
-    let yGroup =  g.append("g").call(yAxis).attr("transform",`translate(0,0)`)
+    let yGroup =  g.append("g").call(yAxis).attr("transform",`translate(-10,0)`)
       g.append("text").attr("x",580).attr("y",70).text("Time").attr("text-anchor","middle").attr("transform",`translate(0,${innerHeight})`).attr("font-size",28).attr("class","text-data")
       g.append("text").attr("x",580 ).attr("y",30).text("Population Vs Years").attr("text-anchor","middle").attr("transform",`translate(0,${-innerHeight/8})`).attr("font-size",28).attr("class","text-data")
       g.append("text").attr("x",-270).attr("y",-60).text("Population").attr("font-size",28).attr("transform","rotate(-90)").attr("class","text-data")
@@ -149,7 +149,7 @@ function render(data){
                       return yScale(d.value)
                     })
                     .attr("fill", "grey" )
-                    .duration(10000)
+                    .duration(3000)
 
 
       }
@@ -157,15 +157,14 @@ function render(data){
       d3.select("#selectButton").on("change", function(d) {
               var selectedOption = d3.select(this).property("value")
               update(selectedOption)
-          })
+            })
 }
-
-d3.csv("code.csv").then(data=>{
-  data.forEach(d=>{
-    d.Time = new Date(d.Time)
-    d.PopMale = Math.round(d.PopMale)
-    d.PopFemale = Math.round(d.PopFemale)
-    d.PopTotal = Math.round(d.PopTotal)
-  })
-  setInterval(render(data),1000)
+    d3.csv("code.csv").then(data=>{
+        data.forEach(d=>{
+          d.Time = new Date(d.Time)
+          d.PopMale = Math.round(d.PopMale)
+          d.PopFemale = Math.round(d.PopFemale)
+          d.PopTotal = Math.round(d.PopTotal)
+        })
+    render(data)
 })
